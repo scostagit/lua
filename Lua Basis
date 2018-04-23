@@ -1,0 +1,160 @@
+Lua basics summary
+Here is the finished project for your reference.
+
+require 'node'
+require 'stringutil'
+require 'split'
+
+test = {}
+
+function trace(A) return end
+
+function main(Data)
+   for k,v in pairs(test) do 
+      v()
+   end
+end
+
+function test.helloWorld()
+   print('Is there anybody out there?')
+end
+
+--Below we will begin our Lua tutorial
+--[[However, first I wanted 
+to show you the comment syntax]]
+--[===[These may [or may not]] come in 
+handy.]===]
+
+function test.concatenation()
+   local Value = 1
+   local Line = 'We are all '..Value..' string'
+   trace(Line)
+end
+
+function test.testLocalVar()
+   local MyVar  = 'I am a local'
+         Global = 'Peace'
+   testlocal()
+end
+
+function testlocal()
+   trace(Global)
+   trace(MyVar)
+end
+
+function test.Types()
+   local ANum = 10
+   type(ANum)
+   local AStr = '10'
+   type(AStr)
+   type(true)
+   type(test)
+   type(testCondition) 
+end
+
+function test.testLoop()
+   for i=1, 5 do 
+      trace(i)
+   end
+end
+
+function test.whileLoop()
+   local i=1
+   while i < 10 do 
+      trace(i)
+      i=i+1
+   end
+   trace(i)
+   while true do 
+      i=i+1
+      trace(i)
+      if i==18 then 
+         break
+      end
+   end
+end
+
+function test.testMultipleReturns()
+   foo()
+   local A, B, three = foo()
+   trace(A)
+   trace(B)
+   trace(three)
+end
+
+function foo()
+
+   return 1,2,'C'
+end
+
+function test.Colon()
+   local AString = 'Houdini'
+   string.sub(AString,1,3)
+   AString.sub(AString,1,3)
+   AString:sub(1,3)
+end
+
+function test.testString()
+   local A = "  Never   odd   or  even"
+   A:upper()
+   A:lower()
+   
+   A:byte(3)
+   string.char(78)
+   A:find('even')
+   A:len()
+   A:sub(1,8)
+   A:sub(A:find('odd'),A:len())
+   A:gsub('%s', '')
+   A:rep(5)
+   string.rep('0',10)
+   for w in A:gmatch('%a+') do 
+      trace(w)
+   end
+   
+   R = A:reverse()
+   --Can you make R look like this 'Never odd or even'
+   
+
+end
+
+function test.testTable()
+   local T =  {I='Inpatient', O='Outpatient'}
+   T['P'] = 'Preadmit'
+   T.U = 'Urgent'
+   for k,v in pairs(T) do 
+      trace(k..'='..v)
+   end
+   trace(T)
+   trace(_G)
+end
+
+function test.error()
+   local Success, Error = pcall(Bang)
+   trace(Success)
+   trace(Error)
+end
+
+function Bang()
+   error('Bang',1)
+end
+
+function test.testIO()
+   local F = io.open('IguanaConfiguration.xml', "r")
+   local C = F:read("*a")
+   F:close()
+   local X = xml.parse{data=C}
+   X.iguana_config.channel_config:childCount("channel")
+   local P = io.popen('dir /B')
+   local File = P:read('*a')
+   local List = File:split('\n')
+   
+--Live in this example is set to false so that it does not connect
+--change live to true and notice the 'live' in your annotations
+   local Connection = net.ftp.init{server='ftp.interfaceware.com', 
+      username='anonymous', 
+      password='password', 
+      live=false
+   }
+   
+end
