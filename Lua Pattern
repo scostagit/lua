@@ -1,0 +1,239 @@
+Pattern	Represents	Example
+.	Any character	#32kasGJ1%fTlk?@94
+%a	An UPPERCASE or lowercase letter	aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ
+%l	A lowercase letter	abcdefghijklmnopqrstuv
+%u	A UPPERCASE letter	ABCDEFGHIJKLMNOPQRSTUVWXYZ
+%p	Any punctuation character	!@#
+%w	An alphanumeric character (letter or digit)	abcDEF123
+%d	Any digit	012345678
+%s	A whitespace character	spaces ' ', \r or \n
+%c	A control character	\n = Line feed,  \r = Carriage Return and  \b = Backspac
+%x	A hexadecimal (Base 16) digit	0123456789ABCDEF
+%z	The NULL character, '\0'	\0
+ 
+
+Create a new function to your Lua Basics channel. Open Lua Basics channel and scroll to the bottom.  Add a function and call it it "test.TruePatterns()":
+function test.TruePatterns()
+end
+Copy and paste the following string inside your function to use for the rest of the tutorial:
+local s = 'A string!\n 1:{Act}, 2:{Cat}, 3:{Cap}'
+Enter the following code to match any character:
+string.match(s, '.')
+Now enter the following for each of the codes and view the results in the annotations:
+s:match('.')   --Any Character
+s:match('%a')  --Any upper or lower case character
+s:match('%l')  --A lowercase letter
+s:match('%u')  --An UPPERCASE letter
+s:match('%p')  --Any Punctuation character
+s:match('%w')  --An alphanumberic character
+s:match('%d')  --Any digit
+s:match('%s')  --A whitespace character
+s:match('%c')  --control character like carriage return \t line feed \n backspace \b etc
+s:match('%x')  --A hexadecimal (Base 16) digit)
+s:match('%z')  --the NULL character literal '\0'
+Using a capital for the character class above will produce the opposite results. Try each of them:
+--CAPITAL FOR OPPOSITE
+   s:match('%A')  --Any NON upper or lower case character
+   s:match('%L')  --An UPPERCASE letter
+   s:match('%U')  --A lowercase letter
+   s:match('%P')  --Any alphanumeric character
+   s:match('%W')  --Any NON alphanumberic character
+   s:match('%D')  --Any NON digit
+   s:match('%S')  --Any NON whitespace character
+   s:match('%C')  --Any non control character
+   s:match('%X')  --Any non hexadecimal (Base 16) digit)
+   s:match('%Z')  --Any character
+Magic characters ^$()%.[]*+-? are reserved to have special meaning. To get the literal value for these characters you must use a '%' before the character.
+string.match('I never have any $', '%$')
+Quantifiers allow you to match a series of 0 to many characters together within your string. '+' = Match 1 or more of the preceding character specifier.
+s:gsub('%a+', 'X')
+'?' = Match 0 or 1 of the preceding character specifier.
+s:gsub('%a?', 'X')
+'-' = Match as few of the preceding character specifier as possible (i.e. lazy matching which matches as few characters as possible.)
+s:gsub('{(.-)}', 'X') -- lazy match as few characters as possible
+'*' = Match 0 or more of the preceding character specifier (i.e. greedy matching which finds as many characters as possible)
+s:gsub('{(.*)}', 'X')
+Anchors ensure that your matching will start at the beginning or the end of your string.  Try the following scripts as an example:
+--ANCHORS
+   s:gsub('1:', 'X')  --Find and replace '1:' with 'X'
+   s:gsub('^1:', 'X') --anchor to beginning
+   s:gsub('^A ', 'X') --anchor to beginning
+   s:gsub('1:$', 'X') --anchor to end
+   s:gsub('%}$', 'X') --anchor to end
+   s:gsub('^A.+}$', 'X') --If 'A' in the beginning and '}' at the end then replace everything
+Sets allow you to define a list of character or codes to look for.  Complete the below as an example:
+ --SETS
+   s:gsub('%d%p', 'X')
+   s:gsub('[%d%:s]', 'X')
+   s:gsub('[abc]', 'X')
+Ranges are allowed within the sets so that you do not have to list every value.
+--RANGES
+   s:gsub('[1-3]', 'X')
+   s:gsub('[a-f]', 'X')
+   s:gsub('[a-fA-F]', 'X')
+Complements help you find the opposite of what is in your set.
+ --COMPLEMENTS
+   s:gsub('[%s]+', 'X')
+   s:gsub('[^%s]+', 'X')
+   s:gsub('[%{]+', 'X')
+   s:gsub('[^%{]+', 'X')
+Lua allows Capture which allow you to reference your captured values later with a % and the number of the capture you are referencing, for example:
+--CAPTURES
+   s:gsub('(.)(a)', '%2%1')  --you can reference what is 'Captured'
+Final code
+Here is a code snippet of the whole tutorial plus some setup and basic string functions.  I thought it might be handy to see the whole thing.
+
+local test = {}
+
+local function trace(A) return end 
+
+function main(Data)
+   for k,v in pairs(test) do 
+      v()
+   end
+end
+
+function test.strings()
+   local s = 'ABCDE'
+   s:byte(1)  -- A = 65
+   s:byte(2)  -- B = 66
+   s:byte(3)  -- C = 67
+   s:byte(4)  -- D = 68
+   s:byte(5)  -- E = 69
+   s:byte(6)  -- out of range
+   
+   string.char(65, 66, 67, 68, 69)
+end
+
+function test.SearchingStrings()
+   local s = 'Hello Lua User'
+   
+   s:find('Lua')     -- 'Lua' found
+   s:find('lua')     -- string case sensitivity
+ --We can also specify where to begin the string search
+   s:find('Lua', 8)  -- not found after 8th character
+   s:find('e', -5)   -- start find 5 characters from end
+   
+   
+end
+
+function test.FindReplace()
+   local s = '{Aloha} One {Banana} Two '
+   s:gsub("Banana", "Lua User")  --full text find and replace
+   s:gsub('a', 'A')    -- find and replace all 
+   s:gsub('a', 'A', 3)  --Specify Number of Times to replace
+   
+   s:gsub('(.)(a)', '%2%1')  --you can reference what is 'Captured'
+   
+   s:gsub('Aloha', ck()) --Find and replace through a function
+   
+   s:gsub('{(.-)}', '123') -- lazy match as few characters as possible
+   s:gsub('{(.*)}', '123') --greedy match finds as many characters 
+                           --between two curly brackets as possible
+   
+end
+
+function ck()
+   return 'Hello'
+end
+
+function test.Matching()
+   local s = 'I have 2 questions for you.'
+   s:match('%d+ %a+')
+end
+
+
+function test.PatternOne()
+   local s = '123456789'
+   s:gsub('345', '5')
+   s:gsub('^345', '5')
+   s:gsub('^12345', '5')
+   s:gsub('678', '5')
+   s:gsub('345$', '5')
+   s:gsub('789$', '5')
+   
+   
+   
+end
+
+
+
+function test.TruePatterns()
+
+   
+   local s = 'A string!\n 1:{Act}, 2:{Cat}, 3:{Cap}'
+   
+   string.match(s, '.')
+   s:match('.')   --Any Character
+   s:match('%a')  --Any upper or lower case character
+   s:match('%l')  --A lowercase letter
+   s:match('%u')  --An UPPERCASE letter
+   s:match('%p')  --Any Punctuation character
+   s:match('%w')  --An alphanumberic character
+   s:match('%d')  --Any digit
+   s:match('%s')  --A whitespace character
+   s:match('%c')  --control character like carriage return \t line feed \n backspace \b etc
+   s:match('%x')  --A hexadecimal (Base 16) digit)
+   s:match('%z')  --the NULL character literal '\0'
+   
+   --CAPITAL FOR OPPOSITE
+   s:match('%A')  --Any NON upper or lower case character
+   s:match('%L')  --An UPPERCASE letter
+   s:match('%U')  --A lowercase letter
+   s:match('%P')  --Any alphanumeric character
+   s:match('%W')  --Any NON alphanumberic character
+   s:match('%D')  --Any NON digit
+   s:match('%S')  --Any NON whitespace character
+   s:match('%C')  --Any non control character
+   s:match('%X')  --Any non hexadecimal (Base 16) digit)
+   s:match('%Z')  --Any character
+   
+   --magic characters ^$()%.[]*+-?
+   --Literal Values 
+   string.match('I never have any $', '%$')
+   
+
+   --QUANTIFIERS
+   s:gsub('%a+', 'X')
+   s:gsub('%a?', 'X')
+   s:gsub('{(.-)}', 'X') -- lazy match as few characters as possible
+   s:gsub('{(.*)}', 'X') --greedy match finds as many characters 
+                           --between two curly brackets as possible
+   
+   --ANCHORS
+   s:gsub('1:', 'X')  --Find and replace '1:' with 'X'
+   s:gsub('^1:', 'X') --anchor to beginning
+   s:gsub('^A ', 'X') --anchor to beginning
+   s:gsub('1:$', 'X') --anchor to end
+   s:gsub('%}$', 'X') --anchor to end
+   s:gsub('^A.+}$', 'X') --If 'A' in the beginning and '}' at the end then replace everything
+  
+
+   
+   
+   --SETS
+   s:gsub('%d%p', 'X')
+   s:gsub('[%d%:s]', 'X')
+   s:gsub('[abc]', 'X')
+   
+   --RANGES
+   s:gsub('[1-3]', 'X')
+   s:gsub('[a-f]', 'X')
+   s:gsub('[a-fA-F]', 'X')
+   
+
+   
+   --COMPLEMENTS
+   s:gsub('[%s]+', 'X')
+   s:gsub('[^%s]+', 'X')
+   s:gsub('[%{]+', 'X')
+   s:gsub('[^%{]+', 'X')
+      
+   
+   
+   --CAPTURES
+   s:gsub('(.)(a)', '%2%1')  --you can reference what is 'Captured'
+   
+   
+   
+end
